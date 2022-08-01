@@ -1,0 +1,28 @@
+#cloud-config
+output: {all: '| tee -a /var/log/cloud-init-runner.log'}
+package_upgrade: true
+yum_repos:
+  docker-ce:
+    name: Docker CE Stable - $basearch
+    baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://download.docker.com/linux/centos/gpg
+packages:
+- git
+- docker-ce
+users:
+- default
+- name: gitlab-runner
+  lock_passwd: true
+  shell: /bin/false
+  homedir: /home/gitlab-runner
+runcmd:
+- systemctl start docker.service
+- systemctl enable docker.service
+- curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-arm64
+- chmod +x /usr/local/bin/gitlab-runner
+- sudo /usr/local/bin/gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+- sudo /usr/local/bin/gitlab-runner start
+- sudo /usr/local/bin/gitlab-runner register --non-interactive --url ${runner_url} --executor "docker,default" --docker-image "oraclelinux:8-slim" --tag-list "docker" --run-untagged="true" --locked="false" --registration-token ${runner_token}
+- sudo /usr/local/bin/gitlab-runner register --non-interactive --url ${runner_url} --executor "shell" --tag-list "shell" --run-untagged="false" --locked="false" --registration-token ${runner_token}
