@@ -24,5 +24,5 @@ runcmd:
 - chmod +x /usr/local/bin/gitlab-runner
 - sudo /usr/local/bin/gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
 - sudo /usr/local/bin/gitlab-runner start
-- sudo /usr/local/bin/gitlab-runner register --non-interactive --url ${runner_url} --executor "docker,default" --docker-image "oraclelinux:8-slim" --tag-list "docker" --run-untagged="true" --locked="false" --registration-token ${runner_token}
+- sudo /usr/local/bin/gitlab-runner register --non-interactive --url ${runner_url} --executor "docker" --docker-image "oraclelinux:8-slim" --tag-list "docker,default" --run-untagged="true" --locked="false" --registration-token ${runner_token}
 - sudo /usr/local/bin/gitlab-runner register --non-interactive --url ${runner_url} --executor "shell" --tag-list "shell" --run-untagged="false" --locked="false" --registration-token ${runner_token}
